@@ -1,10 +1,13 @@
-import { SendGridService } from '@anchan828/nest-sendgrid';
-import { Injectable, Logger } from '@nestjs/common';
+import * as sgMail from '@sendgrid/mail';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 @Injectable()
-export class SendGrid {
+export class SendGrid implements OnModuleInit {
   private readonly logger = new Logger(SendGrid.name);
-  constructor(private readonly sendGrid: SendGridService) {}
+
+  onModuleInit() {
+    sgMail.setApiKey(process.env.SEND_GRID_ACCESS_KEY);
+  }
 
   async sendEmail(email: string, username: string, code: string) {
     const html = {
@@ -16,7 +19,7 @@ export class SendGrid {
     };
     this.logger.verbose(html);
     try {
-      await this.sendGrid.send(html);
+      await sgMail.send(html);
     } catch (error) {
       this.logger.verbose(error);
     }

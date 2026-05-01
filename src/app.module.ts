@@ -4,6 +4,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { SharedModule } from './shared/shared.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './authentication/auth.module';
 
 @Module({
@@ -12,15 +13,19 @@ import { AuthModule } from './authentication/auth.module';
     SharedModule,
     UserModule,
     TerminusModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3307,
-      username: 'user_crud',
-      password: 'root',
-      database: 'db_crud',
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get<string>('DB_HOST', 'mysql'),
+        port: config.get<number>('DB_PORT', 3306),
+        username: config.get<string>('DB_USER', 'user_crud'),
+        password: config.get<string>('DB_PASSWORD', 'root'),
+        database: config.get<string>('DB_NAME', 'db_crud'),
+        autoLoadEntities: true,
+        synchronize: config.get<string>('NODE_ENV') !== 'production',
+      }),
     }),
   ],
   controllers: [HealthController],
