@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mysql:
     image: mysql:8.0
@@ -20,7 +18,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - neox_net
+      - api_outer_bff_neox
 
   app:
     image: api-bff-neox:latest
