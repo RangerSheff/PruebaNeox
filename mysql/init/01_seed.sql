@@ -1,5 +1,5 @@
 -- =============================================================
--- Seed inicial: usuarios por defecto con roles
+-- Seed inicial: creación de tabla y usuarios por defecto
 -- Contraseñas hasheadas con SHA256 (mismo algoritmo del backend)
 --   admin@neox.com      -> Admin@2024!
 --   supervisor@neox.com -> Super@2024!
@@ -7,6 +7,18 @@
 -- =============================================================
 
 USE db_crud;
+
+CREATE TABLE IF NOT EXISTS `user` (
+  `email`    VARCHAR(100) NOT NULL,
+  `username` VARCHAR(40)  NOT NULL,
+  `names`    VARCHAR(100) NOT NULL,
+  `lastName` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `role`     ENUM('admin','supervisor','user') NOT NULL DEFAULT 'user',
+  `active`   TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`email`),
+  UNIQUE KEY `UQ_user_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `user` (email, username, names, lastName, password, role, active)
 VALUES
