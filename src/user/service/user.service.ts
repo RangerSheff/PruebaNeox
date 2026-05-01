@@ -67,7 +67,9 @@ export class UserService {
     const { data: user } = await this.findOne(email);
     if (!user.active && validation) return UPDATE_INNACTIVE_USER;
 
-    userUpdated.password = await this.encriptPassword(userUpdated.password);
+    if (userUpdated.password) {
+      userUpdated.password = await this.encriptPassword(userUpdated.password);
+    }
     const updateRecord = await this.userRepository.update(email, userUpdated);
     this.logger.verbose(updateRecord);
     if (updateRecord.affected === 0) {
