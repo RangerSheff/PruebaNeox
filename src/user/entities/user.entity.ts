@@ -1,5 +1,11 @@
 import { Column, Entity, Unique, PrimaryColumn } from 'typeorm';
 
+export enum UserRole {
+  ADMIN = 'admin',
+  SUPERVISOR = 'supervisor',
+  USER = 'user',
+}
+
 @Entity()
 @Unique(['email'])
 export class User {
@@ -13,6 +19,8 @@ export class User {
   lastName: string;
   @Column()
   password: string;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: UserRole;
   @Column({ default: true })
   active: boolean;
 }
